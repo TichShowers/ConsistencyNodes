@@ -9,23 +9,18 @@ var express = require('express');
 var app = express();
 var path = require("path");
 
+var datastore = require("./datastore.js");
+
 var neighbours = [];
-var databuffer = [];
 
 var serverid = guid();
 console.log("Server: " + serverid);
 
 app.get('/', function (request, response) {
-  response.json(databuffer);
+	response.json(datastore.getAll());
 });
 
-var server = app.listen(8080, function () {
-
-	var host = server.address().address;
-	var port = server.address().port;
-
-	console.log('Node API listening at http://%s:%s', host, port);
-});
+var server = app.listen(settings.api.listen);
 
 io.sockets.on('connection', function(socket){
 	var address = socket.handshake.address;
@@ -61,7 +56,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('message', function(data){
 		switch(data.type){
 			case "connect": connect(address, data.listen, data.guid); break;
-			case "message": console.log("Server received: "+ data.data); databuffer.push({message: data.data}) ;break;
+			case "message": console.log("Server received: "+ data.data); datastore.addOrUpdate("rand", data.data, serverid) ;break;
 			default: console.log("Server received unknown message of type " + data.type);
 		}
 	});
