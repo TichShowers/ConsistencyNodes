@@ -1,3 +1,5 @@
+var settings = require("./settings.json");
+
 var messageCreator = function(){
     return {
         createConnectMessage: function(port, guid){
@@ -33,6 +35,16 @@ var messageCreator = function(){
                 timestamp: Date.now(),
                 type: "loopback"
             };
+        },
+        createDataUpdateMessage: function(id, data, guid) {
+            return {
+                timestamp: Date.now(),
+                type: "update",
+                expires: new Date(Date.now() + settings.ttl),
+                id: id,
+                data: data,
+                modifiedby: guid
+            }
         }
     };
 };

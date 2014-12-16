@@ -56,7 +56,6 @@ io.sockets.on('connection', function(socket){
 	socket.on('message', function(data){
 		switch(data.type){
 			case "connect": connect(address, data.listen, data.guid); break;
-			case "message": console.log("Server received: "+ data.data); datastore.addOrUpdate("rand", data.data, serverid) ;break;
 			default: console.log("Server received unknown message of type " + data.type);
 		}
 	});
@@ -81,13 +80,20 @@ var clientCreator = function(serverip, serverport){
 			addClient(connection.ip, connection.port);
 			console.log("Connection " + serverip + " moving to " + connection.ip);
 		});
+	};
+
+	var update = function(message) {
+		if(Date.now() < message.expires) {
+			merge(message.id, message.data, message.modifiedby, message.modifiedat);
+			io.sockets.emit('message', message);
+		}
 	}
 
 	client.on('message', function(data){
 		switch(data.type){
 			case "success": break;
-			case "message": console.log("Client received: "+ data.data); break;
 			case "move": move(data.connections); break;
+			case "update": update(data); break;
 			case "loopback": removeNeighbour(findNeighbourByIp(serverip)); client.disconnect(); break;
 			default: console.log("Client received unknown message of type " + data.type);
 		}
@@ -154,13 +160,17 @@ settings.connections.forEach(function(connection){
 
 // TESTING METHODS
 
-var colin = function() {
-	var message = serverid + " Sending: " + Math.floor(Math.random() * 100);
+var rand = function() {
+	var number = Math.floor(Math.random() * 1000);
 
-	sendToAllNeighbours(messages.createDataMessage(message));
-	setTimeout(colin, 10000);
+	datastore.addOrUpdate("rand", number, serverid);
+	var message = datastore.findLastUpdate("rand");
+
+	io.sockets.emit("message", messages.createDataUpdateMessage("rand", message.data, message.modifiedby, message.modifiedat));
+
+	setTimeout(rand, 10000);
 };
-colin();
+rand();
 
 var logging = function() {
 	console.log("Logging data");
