@@ -1,0 +1,38 @@
+{
+  "name": "NodeDataServer",
+  "version": "1.0.0",
+  "description": "NodeJS implemention for keeping data consistent over many small Node servers. Prototype application. Needs a lot of work.",
+  "main": "server.js",
+  "dependencies": {
+    "after": "^0.8.1",
+    "express": "^4.10.6",
+    "options": "^0.0.6",
+    "socket.io": "^1.2.1",
+    "socket.io-client": "^1.2.1",
+    "ultron": "^1.0.1",
+    "utf8": "^2.0.0",
+    "ejs-locals": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TichShowers/ConsistencyNodes"
+  },
+  "keywords": [
+    "node",
+    "consistency",
+    "raspberry",
+    "pi",
+    "prototype"
+  ],
+  "author": "Colin Bundervoet",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TichShowers/ConsistencyNodes/issues"
+  },
+  "homepage": "https://github.com/TichShowers/ConsistencyNodes"
+}
