@@ -84,8 +84,13 @@ var clientCreator = function(serverip, serverport){
 
 	var update = function(message) {
 		if(Date.now() < message.expires) {
-			merge(message.id, message.data, message.modifiedby, message.modifiedat);
+			datastore.merge(message.id, message.data, message.modifiedby, message.modifiedat);
 			io.sockets.emit('message', message);
+			console.log("received packet");
+		}
+		else
+		{
+			console.log("dropped packet");
 		}
 	}
 

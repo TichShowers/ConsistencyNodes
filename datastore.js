@@ -81,7 +81,7 @@ var merge = function(id, data, guid, timestamp) {
 	if(obj)
 	{
 		var point = obj.history.filter(function(p) {
-			return guid = p.modifiedby && timestamp == p.modifiedat;
+			return guid === p.modifiedby && timestamp === p.modifiedat;
 		});
 
 		if(point[0])

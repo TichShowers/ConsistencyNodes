@@ -36,14 +36,15 @@ var messageCreator = function(){
                 type: "loopback"
             };
         },
-        createDataUpdateMessage: function(id, data, guid) {
+        createDataUpdateMessage: function(id, data, guid, timestamp) {
             return {
                 timestamp: Date.now(),
                 type: "update",
-                expires: new Date(Date.now() + settings.ttl),
+                expires: Date.now() + settings.ttl,
                 id: id,
                 data: data,
-                modifiedby: guid
+                modifiedby: guid,
+                modifiedat: timestamp
             }
         }
     };
