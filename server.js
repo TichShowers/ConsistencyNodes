@@ -48,7 +48,9 @@ io.sockets.on('connection', function(socket){
 		else
 		{
 			socket.emit('message', messages.createLoopbackMessage());
-			socket.disconnect();
+			if(settings.debug.disableLoopback){
+				socket.disconnect();
+			}
 		}
 		
 	};
@@ -78,7 +80,6 @@ var clientCreator = function(serverip, serverport){
 
 		connections.forEach(function(connection){
 			addClient(connection.ip, connection.port);
-			console.log("Connection " + serverip + " moving to " + connection.ip);
 		});
 	};
 
@@ -86,11 +87,11 @@ var clientCreator = function(serverip, serverport){
 		if(Date.now() < message.expires) {
 			datastore.merge(message.id, message.data, message.modifiedby, message.modifiedat);
 			io.sockets.emit('message', message);
-			console.log("received packet");
 		}
 		else
 		{
 			console.log("dropped packet");
+			console.log(message);
 		}
 	}
 
@@ -99,7 +100,9 @@ var clientCreator = function(serverip, serverport){
 			case "success": break;
 			case "move": move(data.connections); break;
 			case "update": update(data); break;
-			case "loopback": removeNeighbour(findNeighbourByIp(serverip)); client.disconnect(); break;
+			case "loopback": if(settings.debug.disableLoopback){
+				removeNeighbour(findNeighbourByIp(serverip)); client.disconnect(); break;
+			}
 			default: console.log("Client received unknown message of type " + data.type);
 		}
 	});
